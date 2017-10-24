@@ -14,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
@@ -70,12 +72,19 @@ public class startmainclass extends Application {
         FlowPane dolniPanel = new FlowPane();
         dolniPanel.setAlignment(Pos.CENTER);
         dolniPanel.getChildren().addAll(zadejPrikazLabel, zadejPrikazTextField);
+        
+        //přidání obrázku s mapou
+        FlowPane obrazekPane = new FlowPane();
+        ImageView obrazek = new ImageView(new Image(startmainclass.class.getResourceAsStream("/zdroje/mapa.jpg"), 300,300, false, false));
+        obrazekPane.getChildren().add(obrazek);
+        obrazekPane.setPrefSize(300,300);
+        
         borderPane.setBottom(dolniPanel);
-        
-        
-    
-        
+        borderPane.setLeft(obrazekPane);
        
+        
+        
+        
         /*Button btn = new Button();
         btn.setText("Start adventura'");
         btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -97,6 +106,7 @@ public class startmainclass extends Application {
         primaryStage.setTitle("Moje adventura");
         primaryStage.setScene(scene);
         primaryStage.show();
+        zadejPrikazTextField.requestFocus();
     }
 
     /**
