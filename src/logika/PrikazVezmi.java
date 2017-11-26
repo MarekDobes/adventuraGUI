@@ -6,7 +6,7 @@ package logika;
  * a jeho vložení do batohu (inventáře) postavy.
  * 
  * @author   Marek Dobeš
- * @version  16 05 2017
+ * @version  ZS 2017/2018
  */
 public class PrikazVezmi implements IPrikaz
 {
@@ -55,7 +55,7 @@ public class PrikazVezmi implements IPrikaz
         Lokace aktLokace = hPlan.getAktualniLokace(); 
         
         if (!aktLokace.obsahujePredmet(nazevPredmetu)) {//pokud aktuální lokace neobsahuje daný předmět
-        
+        hPlan.notifyAllObservers();
             return "Predmet " + nazevPredmetu + " tady neni"; 
         }
         
@@ -72,16 +72,19 @@ public class PrikazVezmi implements IPrikaz
             Predmet pred = aktLokace.vezmiPredmet(nazevPredmetu); //natažení zamýšleného předmětu do proměnné "pred"
             
             if (!pred.isPrenositelny()) { //pokud nelze přenést
+            hPlan.notifyAllObservers(); //upozorni obserera na hernimPlanu
             aktLokace.vlozPredmet(pred); //nechceme předmět smazat, proto jej vložíme zpět do lokace
             return "Predmet " + nazevPredmetu + " fakt neuneses";
             }
  
             if (batoh.vlozPredmet(pred) == null) { //překročení limitu batohu
+                hPlan.notifyAllObservers();//upozorni obserera na hernimPlanu
                 aktLokace.vlozPredmet(pred); //nechceme předmět smazat, proto jej vložíme zpět do lokace
                 return "Překročil jsem batoh limit";
             }
            
             else {
+                hPlan.notifyAllObservers();//upozorni obserera na hernimPlanu
                 return "Sebral(a) jsi predmet " + nazevPredmetu; //pokud projde podmínkami, předmět se sebere
                 
             }

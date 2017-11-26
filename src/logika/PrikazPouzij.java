@@ -4,7 +4,7 @@ package logika;
  * Tato třída umožňuje pomocí svých instancí používat předměty ve hře.
  * 
  * @author Marek Dobeš
- * @version 27 04 2017
+ * @version ZS 2017/2018
 */
 public class PrikazPouzij implements IPrikaz
 {

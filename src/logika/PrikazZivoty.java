@@ -6,7 +6,7 @@ package logika;
  * Pokud počet životů klesne pod 1, hráč nemůže vyhrát (i kdyby zásilku donesl).
  * 
  * @author Marek Dobeš
- * @version 02 05 2017
+ * @version ZS 2017/2018
 */
 
 public class PrikazZivoty implements IPrikaz

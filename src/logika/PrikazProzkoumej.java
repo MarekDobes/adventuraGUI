@@ -6,7 +6,7 @@ package logika;
  * Tato třída je součástí jednoduché textové hry.
  *
  * @author     Marek Dobeš
- * @version    12 05 2017
+ * @version    ZS 2017/2018
  */
 public class PrikazProzkoumej implements IPrikaz
 {
@@ -45,7 +45,7 @@ public String proved(String... parametry)
         Lokace aktLokace = hPlan.getAktualniLokace();
         
         if(aktLokace.obsahujePredmet(nazevPredmetu)) {
-        
+        hPlan.notifyAllObservers();
             return aktLokace.najdiPredmet(nazevPredmetu).getPopis();
             
         }

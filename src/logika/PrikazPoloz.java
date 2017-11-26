@@ -5,7 +5,7 @@ package logika;
  * Tato třída umožňuje pomocí svých instancí pokládat předměty do lokací ve hře.
  * 
  * @author Marek Dobeš
- * @version 29 04 2017
+ * @version ZS 2017/2018
  */
 
 public class PrikazPoloz implements IPrikaz
@@ -52,8 +52,9 @@ public class PrikazPoloz implements IPrikaz
         }
       
         else {
-            odkladany = batoh.smazPredmet(nazevPredmetu); //přenastavení předmětu z batohu do pomocné proměnné odkladany + předmět se z batohu smaže
+            batoh.smazPredmet(nazevPredmetu); 
             aktualniLokace.vlozPredmet(odkladany); //odkladany předmět se přesune do aktuální lokace
+            herniPlan.notifyAllObservers(); //upozornime observera na hernimPlanu o zmene v batohu a lokaci
             return "Odložil jsem " + nazevPredmetu; //výpis, co bylo "položeno" (které předměty jsme vytáhly z batohu a odložili)
         }
     }

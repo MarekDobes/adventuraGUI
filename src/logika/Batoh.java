@@ -6,25 +6,33 @@ package logika;
  * Kontrola kódování: Příliš žluťoučký kůň úpěl ďábelské ódy. */
 
  import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import utils.Observer;
 
 /*******************************************************************************
  * Batoh představuje samostatnou třídu ve hře. 
- * Umožňuje přidávat předměty(Predmet) do batohu (ArrayList).
+ * Umožňuje přidávat předměty(Predmet) do batohu (Map).
  *
  * @author    Marek Dobeš 
- * @version   23 04 2017
+ * @version   ZS 2017/2018
  */
 public class Batoh
 {
     private static final int Kapacita = 4;    // Maximální počet věcí v batohu
-    private List<Predmet> seznamPredmetu;            // Seznam věcí v batohu
+    //private List<Predmet> seznamPredmetu;            // Seznam věcí v batohu
+    private Map <String, Predmet> predmety; //Mapa předmětů
+    
 
 
     /**
      *  Konstruktor třídy Batoh (seznam Předmětů --> vyvolá se jako ArrayList)
      */
     public Batoh() {
-        seznamPredmetu = new ArrayList<Predmet>();
+        //seznamPredmetu = new ArrayList<Predmet>();
+        predmety = new HashMap<String,Predmet>();
     }
     
  
@@ -38,7 +46,7 @@ public class Batoh
      */
     public Predmet vlozPredmet(Predmet vkladany) {
         if (freePlace()==true) {          //freePlace je true, volné místo tedy je
-            seznamPredmetu.add(vkladany);
+            predmety.put(vkladany.getNazev(),vkladany);
             return vkladany;
         }
         
@@ -56,7 +64,7 @@ public class Batoh
      *          false  pokud dostupné místo není.
      */
      public boolean freePlace() {
-        if (seznamPredmetu.size() < Kapacita) {
+        if (predmety.size() < Kapacita) {
             return true;   
         }        
         
@@ -73,14 +81,11 @@ public class Batoh
      * @return  true      pokud se předmět v batohu nachází, jinak je false
      */
     public boolean obsahujePredmet(String hledam) {
-        for (Predmet aktualni: seznamPredmetu) {
-            if (aktualni.getNazev().equals(hledam)) {
-                 return true;
-            }
+        if (this.predmety.containsKey(hledam)) {
+            return true;
         }
-        
         return false;
-    }
+    }    
     
     
     
@@ -90,16 +95,17 @@ public class Batoh
      * @return   obsah     na konzoli se vypíše aktuální seznam věcí v batohu
      */
     public String getPredmety() {
-        String obsah = ""; //prozatím zde nic není (vypíše se "") 
+        String obsah = "";
         
-        for (Predmet aktualni: seznamPredmetu) {
-            if (!obsah.equals("")) {
-                
-                obsah += " "; //vynucená mezera (" ") slouží pro oddělení výpisu jednotlivých předmětů (např. pivo rum vodka)
-            }
-            obsah += " " + aktualni.getNazev();
+        for (String nazev : predmety.keySet()) {
+            obsah += " " + nazev;
         }
-        
+        if (obsah.length() == 0) {
+            obsah = " nichts zu sehen"; //v batohu není nic
+        }
+        else {
+            obsah = ""+obsah; //přidá se
+        }
         return obsah;
     }
     
@@ -113,15 +119,9 @@ public class Batoh
      */
     public Predmet getPredmet(String nazevPredmetu) {
         Predmet hledany = null;
+        return predmety.get(nazevPredmetu);
         
-        for (Predmet aktualni: seznamPredmetu) {
-            if(aktualni.getNazev().equals(nazevPredmetu)) { //hledáme předmět, který máme v batohu
-                hledany = aktualni;
-                break;
-            }
-        }
         
-        return hledany;
     }
     
     
@@ -133,18 +133,13 @@ public class Batoh
      * @param   odstran     předmět, který zamýšlíme z batohu vymazat (odstranit)
      * @return  odstraneny  vrací vymazaný předmět. V případě jeho nenalezení hodnota null
      */
-    public Predmet smazPredmet (String odstran) {
-        Predmet odstraneny = null;
-        
-        for(Predmet prit: seznamPredmetu) { //natažení seznamu předmětů do pomoc proměnné
-            if(prit.getNazev().equals(odstran)) { //pokud je předmět v batohu stejný jako ten, se kterým zamýšlíme provést akci
-                odstraneny = prit; //vložení předmětu z batohu do proměnné
-                seznamPredmetu.remove(prit); //odstranění prit
-                break;
-            }
+    public boolean smazPredmet (String remove) {
+        boolean odeb = false;
+        if(predmety.containsKey(remove) && predmety.get(remove).isPrenositelny()) {
+            predmety.remove(remove);
+            odeb = true;
         }
-        
-        return odstraneny; //vrací daný předmět
+        return odeb;
     }
     
     
@@ -158,6 +153,14 @@ public class Batoh
         return Kapacita;
     }
     
-    
+    /**
+     * Vrací mapu předmětů s jejich názvy
+     * @return predmety 
+     */
+    public Map <String,Predmet> vratBatoh()
+    {
+        return this.predmety; //mapa pro název předmětu a předmět
+    }
 
+   
 }

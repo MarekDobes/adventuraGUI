@@ -2,28 +2,43 @@
  * Kontrola kódování: Příliš žluťoučký kůň úpěl ďábelské ódy. */
 package logika;
 
+import java.util.ArrayList;
+import java.util.List;
+import utils.Observer;
+import utils.Subject;
+
 /**
  * Class HerniPlan - třída představující mapu a stav adventury.
  * 
  * Tato třída inicializuje prvky ze kterých se hra skládá:
  * vytváří všechny lokace, propojuje je vzájemně pomocí východů 
  * a pamatuje si aktuální lokaci, ve které se hráč právě nachází.
+ * Kromě toho nastavuje array list observerů na této třídě
  *
  * @author     Michael Kolling, Lubos Pavlicek, Jarmila Pavlickova, Jan Riha, Marek Dobeš
- * @version    16 05 2017
+ * @version    ZS 2017/2018
  */
-public class HerniPlan {
+public class HerniPlan implements Subject{
    
     private Lokace aktualniLokace;
     private Batoh batoh;
+    private List<Observer> listObserveru = new ArrayList<Observer>();
+    private Hra hra;
+    
+    
     
     /**
      * Konstruktor který vytváří jednotlivé lokace a propojuje je pomocí východů.
      */
-    public HerniPlan() {
+    public HerniPlan(Hra hra) {
         zalozLokaceHry();
         batoh = new Batoh();
+        this.hra = hra;
     }
+    public Hra getHra(){
+        return this.hra;
+    }
+    
 
     /**
      * Vytváří jednotlivé lokace a propojuje je pomocí východů.
@@ -31,23 +46,23 @@ public class HerniPlan {
      */
     private void zalozLokaceHry() {
         // vytvářejí se jednotlivé lokace
-        Lokace domov = new Lokace("domov","dům, ve kterém bydlí Luigi");
-        Lokace ulice = new Lokace("ulice", "ulice, vede okolo Luigiho domu"); 
-        Lokace obchod = new Lokace("obchod","klasická večerka, je to tam jen pár metrů od domova");
-        Lokace pestirna = new Lokace("pestirna", "pěstírna, co od majitele večerky jiného čekat");
-        Lokace hlavni = new Lokace("hlavni","nejrušnější ulice ve městě"); 
-        Lokace pizzerie = new Lokace("pizzerie","Pizzerie, ve které pracuješ");
-        Lokace satna = new Lokace("satna","Obyčejná šatna, sem si dáváš věci");
-        Lokace metro = new Lokace("metro","Staré komančské metro, odpadky kam šlápneš\nkdyž ale odjedeš metrem na trase C\nUŽ SE NELZE VRÁTIT ZPĚT!!!\nzpáteční trasa je zaplavena.");
-        Lokace stanice = new Lokace("stanice", "Stanice, Po půl hodině jsi dojel na konečnou stanici");
-        Lokace banka = new Lokace("banka","Banka, Vlastní ji Krejčíř, měj se na pozoru! ");
-        Lokace nemocnice = new Lokace("nemocnice","Motol, Ošklivý zápach všude kolem, ale snad ti tu pomůžou");
-        Lokace ukryt = new Lokace("ukryt","Bunker, Zajímavá stavba u silnice, třeba tam něco najdeš");
-        Lokace azyl = new Lokace("azyl","Asylum, Něco jako psychiatrická léčebna, něco by jsi tam ale mohl ukrást\nvedou jej jeptišky, nejsou podezíravé");
-        Lokace les = new Lokace("les","Falndyr, Temný hvozd, pozor na dravá zvířata a loupežníky");
-        Lokace radnice = new Lokace("radnice","Radnice, Klasická byrokratická stavba");
+        Lokace domov = new Lokace("domov","dům, ve kterém bydlí Luigi",105,275);
+        Lokace ulice = new Lokace("ulice", "ulice, vede okolo Luigiho domu",278,275); 
+        Lokace obchod = new Lokace("obchod","klasická večerka, je to tam jen pár metrů od domova",105,100);
+        Lokace pestirna = new Lokace("pestirna", "pěstírna, co od majitele večerky jiného čekat",280,100);
+        Lokace hlavni = new Lokace("hlavni","nejrušnější ulice ve městě",455,275); 
+        Lokace pizzerie = new Lokace("pizzerie","Pizzerie, ve které pracuješ",105,440);
+        Lokace satna = new Lokace("satna","Obyčejná šatna, sem si dáváš věci",280,440);
+        Lokace metro = new Lokace("metro","Staré komančské metro, odpadky kam šlápneš\nkdyž ale odjedeš metrem na trase C\nUŽ SE NELZE VRÁTIT ZPĚT!!!\nzpáteční trasa je zaplavena.",458,595);
+        Lokace stanice = new Lokace("stanice", "Stanice, Po půl hodině jsi dojel na konečnou stanici",103,673);
+        Lokace banka = new Lokace("banka","Banka, Vlastní ji Krejčíř, měj se na pozoru! ",255,737);
+        Lokace nemocnice = new Lokace("nemocnice","Motol, Ošklivý zápach všude kolem, ale snad ti tu pomůžou",420,678);
+        Lokace ukryt = new Lokace("ukryt","Bunker, Zajímavá stavba u silnice, třeba tam něco najdeš",737,770);
+        Lokace azyl = new Lokace("azyl","Asylum, Něco jako psychiatrická léčebna, něco by jsi tam ale mohl ukrást\nvedou jej jeptišky, nejsou podezíravé",580,675);
+        Lokace les = new Lokace("les","Falndyr, Temný hvozd, pozor na dravá zvířata a loupežníky",420,770);
+        Lokace radnice = new Lokace("radnice","Radnice, Klasická byrokratická stavba",580,460);
         
-  
+        aktualniLokace = domov;  // hra začíná v domově lugiho 
         
         
         // přiřazují se průchody mezi lokacemi (sousedící lokace)
@@ -85,15 +100,15 @@ public class HerniPlan {
         banka.setVychod(stanice);
         banka.setVychod(les);
         
+        azyl.setVychod(radnice);
+        azyl.setVychod(nemocnice);
+        
         nemocnice.setVychod(stanice);
         nemocnice.setVychod(azyl);
 
         ukryt.setVychod(les);
         ukryt.setVychod(radnice);
-        
-        azyl.setVychod(radnice);
-        azyl.setVychod(nemocnice);
-        
+
         les.setVychod(banka);
         les.setVychod(azyl);
         les.setVychod(ukryt);
@@ -138,61 +153,61 @@ public class HerniPlan {
         
         //vkládání předmětů do lokace
         
-        domov.vlozPredmet(new Predmet("voda", "láhev sodovky", true));
-        domov.vlozPredmet(new Predmet("dolary", "bankovka 100$", true));
-        domov.vlozPredmet(new Predmet("eura", "bankovka 200EUR", true));
-        domov.vlozPredmet(new Predmet("stul", "Stůl z Bauhausu", false));
-        domov.vlozPredmet(new Predmet("skrin", "skříň z obchodu Ikea", false));
+        domov.vlozPredmet(new Predmet("voda", "láhev sodovky", true, "voda.png"));
+        domov.vlozPredmet(new Predmet("dolary", "bankovka 100$", true, "dolary.png"));
+        domov.vlozPredmet(new Predmet("eura", "bankovka 200EUR", true,"eura.png"));
+        domov.vlozPredmet(new Predmet("stul", "Stůl z Bauhausu", false, "stul.png"));
+        domov.vlozPredmet(new Predmet("skrin", "skříň z obchodu Ikea", false, "skrin.png"));
         
-        ulice.vlozPredmet(new Predmet("odpadky", "pytel odpadků", false));
-        ulice.vlozPredmet(new Predmet("koš", "koš s odpadky, je docela těžký", false));
+        ulice.vlozPredmet(new Predmet("odpadky", "pytel odpadků", false,"odpadky.png"));
+        ulice.vlozPredmet(new Predmet("koš", "koš s odpadky, je docela těžký", false,"koš.png"));
         
-        obchod.vlozPredmet(new Predmet("pepsi", "plechovka Pepsi", true));
-        obchod.vlozPredmet(new Predmet("regál", "regál, ten asi nezvednu", false));
-        obchod.vlozPredmet(new Predmet("calvados", "láhev calvadosu", true));
+        obchod.vlozPredmet(new Predmet("pepsi", "plechovka Pepsi", true,"pepsi.png"));
+        obchod.vlozPredmet(new Predmet("regál", "regál, ten asi nezvednu", false,"regál.png"));
+        obchod.vlozPredmet(new Predmet("calvados", "láhev calvadosu", true,"calvados.png"));
         
-        pestirna.vlozPredmet(new Predmet("konopi", "hezká rostlinka, ženě by se mohla líbit", true));
-        pestirna.vlozPredmet(new Predmet("světlo", "UV světlo, na co to asi je?", false));
-        pestirna.vlozPredmet(new Predmet("kolona", "Tady se něco vaří", false));
+        pestirna.vlozPredmet(new Predmet("konopi", "hezká rostlinka, ženě by se mohla líbit", true,"konopí.png"));
+        pestirna.vlozPredmet(new Predmet("světlo", "UV světlo, na co to asi je?", false,"světlo.png"));
+        pestirna.vlozPredmet(new Predmet("kolona", "Tady se něco vaří", false,"kolona.png"));
         
-        hlavni.vlozPredmet(new Predmet("dlaždice", "Klasické dlaždice, je tu moc lidí, asi je neseberu", false));
+        hlavni.vlozPredmet(new Predmet("dlaždice", "Klasické dlaždice, je tu moc lidí, asi je neseberu", false,"dlaždice.png"));
        
-        pizzerie.vlozPredmet(new Predmet("zásilka", "zásilka pro pana radního", true));
-        pizzerie.vlozPredmet(new Predmet("pizza", "pizza pro pana radního", true));
-        pizzerie.vlozPredmet(new Predmet("sporák", "sporák na vaření", false));
-        pizzerie.vlozPredmet(new Predmet("gril", "klasický gril na grilování", false));
-        pizzerie.vlozPredmet(new Predmet("pastix", "láhev pastixu", true));
+        pizzerie.vlozPredmet(new Predmet("zásilka", "zásilka pro pana radního", true,"zásilka.png"));
+        pizzerie.vlozPredmet(new Predmet("pizza", "pizza pro pana radního", true,"pizza.png"));
+        pizzerie.vlozPredmet(new Predmet("sporák", "sporák na vaření", false,"sporák.png"));
+        pizzerie.vlozPredmet(new Predmet("gril", "klasický gril na grilování", false,"gril.png"));
+        pizzerie.vlozPredmet(new Predmet("pastix", "láhev pastixu", true,"pastix.png"));
         
-        satna.vlozPredmet(new Predmet("lavice", "stará ošoupaná lavice", false));
-        satna.vlozPredmet(new Predmet("lekarnicka", "vojenská lékárnička", true));
-        satna.vlozPredmet(new Predmet("vodka", "Ruský Standard", true));
-        satna.vlozPredmet(new Predmet("pivo", "Lahev oroseného piva", true));
-        satna.vlozPredmet(new Predmet("cigarety", "Startky", true));
+        satna.vlozPredmet(new Predmet("lavice", "stará ošoupaná lavice", false,"lavice.png"));
+        satna.vlozPredmet(new Predmet("lekarnicka", "vojenská lékárnička", true,"lekarnicka.png"));
+        satna.vlozPredmet(new Predmet("vodka", "Ruský Standard", true,"vodka.png"));
+        satna.vlozPredmet(new Predmet("pivo", "Lahev oroseného piva", true,"pivo.png"));
+        satna.vlozPredmet(new Predmet("cigarety", "Startky", true,"cigarety.png"));
         
-        banka.vlozPredmet(new Predmet("medkit", "armádní medkit", true));
-        banka.vlozPredmet(new Predmet("trezor", "ocelový trezor, moc těžké", false));
+        banka.vlozPredmet(new Predmet("medkit", "armádní medkit", true,"medkit.png"));
+        banka.vlozPredmet(new Predmet("trezor", "ocelový trezor, moc těžké", false,"trezor.png"));
         
-        metro.vlozPredmet(new Predmet("poutac", "reklamní poutač", false));
+        metro.vlozPredmet(new Predmet("poutac", "reklamní poutač", false,"poutac.png"));
         
         
-        stanice.vlozPredmet(new Predmet("cedule", "Ukazatel", false));
+        stanice.vlozPredmet(new Predmet("cedule", "Ukazatel", false,"cedule.png"));
         
-        nemocnice.vlozPredmet(new Predmet("luzko", "Lůžko pro pacienty", false));
+        nemocnice.vlozPredmet(new Predmet("luzko", "Lůžko pro pacienty", false,"luzko.png"));
         
-        azyl.vlozPredmet(new Predmet("morfin", "Ampule s morfiem", true));
-        azyl.vlozPredmet(new Predmet("postel", "Postel pro pacienty", false));
+        azyl.vlozPredmet(new Predmet("morfin", "Ampule s morfiem", true,"morfin.png"));
+        azyl.vlozPredmet(new Predmet("postel", "Postel pro pacienty", false,"postel.png"));
 
         
-        les.vlozPredmet(new Predmet("houby", "Zvláštní houbičky, takové lysohlávkové", true));
-        les.vlozPredmet(new Predmet("strom", "Dub či buk, je mi to fuk", false));
+        les.vlozPredmet(new Predmet("houby", "Zvláštní houbičky, takové lysohlávkové", true,"houby.png"));
+        les.vlozPredmet(new Predmet("strom", "Dub či buk, je mi to fuk", false,"strom.png"));
         
-        ukryt.vlozPredmet(new Predmet("bedna", "Masivní bedna, nečekej, že se s ní potáhnu", false));
+        ukryt.vlozPredmet(new Predmet("bedna", "Masivní bedna, nečekej, že se s ní potáhnu", false,"bedna.png"));
 
         
-        radnice.vlozPredmet(new Predmet("obraz", "Krásný obraz od Daliho, ten bych asi krást neměl", false));
+        radnice.vlozPredmet(new Predmet("obraz", "Krásný obraz od Daliho, ten bych asi krást neměl", false,"obraz.png"));
         
 
-        aktualniLokace = domov;  // hra začíná v domově lugiho    
+           
     }
 
     /**
@@ -330,6 +345,7 @@ public class HerniPlan {
      */
     public void setAktualniLokace(Lokace lokace) {
        aktualniLokace = lokace;
+       notifyAllObservers();
     }
     
 /**
@@ -338,5 +354,38 @@ public class HerniPlan {
  */
     public Batoh getBatoh() {
     return this.batoh;
+    }
+
+    /**
+     * metoda zaregistruje návrhový vzor (Observera) na instanci herniho planu, observer se přidá do předdef. listu
+     * @param observer 
+     */
+    @Override
+    public void registerObserver(Observer observer) {
+        listObserveru.add(observer);
+    }
+
+    /**
+     * V případě zavolání metody se Observer odhlásí z listu (např. vytvoření nové hry - na staré instanci je již pozorování nežádoucí)
+     * @param observer 
+     */
+    @Override
+    public void deleteObserver(Observer observer) {
+        listObserveru.remove(observer);
+    }
+
+    /**
+     * Metoda zajišťující real time aktuálnost informací
+     * Pokud dojde ke změně, je nutné observera o změně informovat
+     */
+    @Override
+    public void notifyAllObservers() {
+        for (Observer listObserveruItem :listObserveru){
+            listObserveruItem.update();
+        }
+    }
+
+    public Object getAktualniProstor() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

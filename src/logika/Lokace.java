@@ -21,9 +21,10 @@ import java.util.*;
  * "Lokace" reprezentuje jedno místo (místnost, prostor, ...) ve scénáři hry.
  * Lokace může mít sousední lokace připojené přes východy. Pro každý východ
  * si lokace ukládá odkaz na sousedící lokace.
+ * Přidává také 2D koordináty pro umístění red circle na border panu (pos x a pos y)
  *
  * @author     Michael Kolling, Lubos Pavlicek, Jarmila Pavlickova, Jan Riha, Marek Dobeš
- * @version    LS 2016/2017
+ * @version    ZS 2017/2018
  */
 public class Lokace {
 
@@ -33,6 +34,9 @@ public class Lokace {
     private Map<String, Predmet> predmety; //seznam předmětů
     private List<NPC> listNPC; //seznam postav
     private NPC npc;
+    
+    private double posX; //nastavení posX
+    private double posY; //nastavení posY
 
     /**
      * Konstruktor
@@ -41,10 +45,14 @@ public class Lokace {
      *
      * @param    nazev nazev lokace, jednoznačný identifikátor, jedno slovo nebo víceslovný název bez mezer
      * @param    popis Popis lokace
+     * @param    posX koordinát osy X
+     * @param    posY koordinát osy Y
      */
-    public Lokace(String nazev, String popis) {
+    public Lokace(String nazev, String popis, double posX, double posY) { //nastavení PosX a PosY na mapě s pozicemi bodu na mapě (červené tečky).
         this.nazev = nazev;
         this.popis = popis;
+        this.posX = posX; //pozice horizontální mapy
+        this.posY=posY; //pozice vertikální mapy
         vychody = new HashSet<>();
         predmety = new HashMap<>();
         listNPC = new ArrayList<NPC>();
@@ -213,11 +221,11 @@ public class Lokace {
     
     /**
      * Vrací textový řetězec, který popisuje sousední východy, například:
-     * "vychody: hala ".
+     * "vychody: ulice ".
      *
      * @return    popis východů - názvů sousedních lokací
      */
-    private String popisVychodu() {
+    public String popisVychodu() {
         String vracenyText = "vychody:";
         for (Lokace sousedni : vychody) {
             vracenyText += " " + sousedni.getNazev();
@@ -303,6 +311,45 @@ public class Lokace {
     {
         return predmety.containsKey(nazevPredmetu);
     }
+
+    /**
+     * getter pro PosX
+     * @return the posX
+     */
+    public double getPosX() {
+        return posX;
+    }
+
+    /**
+     * getter pro PosY
+     * @return the posY
+     */
+    public double getPosY() {
+        return posY;
+    }
+    
+    /**
+     * Seznam výhodů z lokace ve formě jednolitého stringu. 
+     * vrací seznam východů ve formátu "východy: "vychody (nutno poté v příslušné třídě GUIvychody oddělit oddělovači a rozdělit splitem)
+     * @return 
+     */
+    public String seznamVychodu() 
+    {
+        String vracenyText = "vychody:";
+        for (Lokace sousedni : vychody) {
+             vracenyText += " " + sousedni.getNazev();
+        }
+        return vracenyText;
+    }
+    /**
+     * getter pro Predmety ve formě mapy
+     * @return predmety
+     */ 
+    
+     public Map<String,Predmet> getPredmety()
+     {
+         return this.predmety;
+     }
    
     
    

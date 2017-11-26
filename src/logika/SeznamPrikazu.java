@@ -15,7 +15,7 @@ import java.util.Map;
  * Tato třída je součástí jednoduché textové hry.
  *
  * @author     Michael Kolling, Lubos Pavlicek, Jarmila Pavlickova, Jan Riha
- * @version    LS 2016/2017
+ * @version    ZS 2017/2018
  */
 class SeznamPrikazu {
     // mapa pro uložení přípustných příkazů

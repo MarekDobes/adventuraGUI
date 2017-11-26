@@ -3,9 +3,9 @@ package logika;
 /**
  * Instance NPC jsou jednotlivé npc (postavy které hráč přímo neovládá).
  * S těmito npc může hráč pouze komunikovat (ptát se jich otázkami).
- * 
+ * no change here for 2017
  * @author Marek Dobeš
- * @version 14 05 2017
+ * @version ZS 2017/2018
  */
 
 public class NPC

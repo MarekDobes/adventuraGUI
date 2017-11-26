@@ -5,12 +5,16 @@
  */
 package main;
 
+import UI.GUIbatoh;
+import UI.Mapa;
+import UI.MenuPole;
+import UI.GUILokacePredmety;
+import UI.GUIVychody;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -19,28 +23,60 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logika.HerniPlan;
 import logika.Hra;
 import logika.IHra;
 import uiText.TextoveRozhrani;
 /**
  *
  * @author dobm03
+ * ZS 2017/2018
+ */
+
+/**
+ * Třída main zahajuje hru, kvůli GUI extenduje obecného předka "Application"
+ * @author MRCS-PC
  */
 public class startmainclass extends Application {
     
+    private Mapa mapa;
+    private MenuPole menu;
+    private IHra hra;
+    private TextArea centerText;
+    private Stage primaryStage;
+    private TextField zadejPrikazTextField;
+    
+    private GUIbatoh GUIbatoh;
+    private GUIVychody panelVychodu;
+    private GUILokacePredmety panelPredmetu;
+    
+   
+    
+    
+
+    /**
+     * konstruktor hry, vytváří komplexní podloží pro UI prvky (stage)
+     * @param primaryStage 
+     */
     @Override
     public void start(Stage primaryStage) {
-        IHra hra = new Hra();
-         //TextoveRozhrani textoveRozhrani = new TextoveRozhrani(hra);
-        // textoveRozhrani.hraj();
-        BorderPane borderPane = new BorderPane();
+        this.primaryStage=primaryStage;
+        hra = new Hra();
+        mapa = new Mapa(hra);
+        menu = new MenuPole(hra, this);
         
-        TextArea centerText = new TextArea();
-        //Text centerText = new Text();
+        
+         
+        BorderPane borderPane = new BorderPane();
+        BorderPane borderPaneItemOut = new BorderPane();
+        BorderPane borderPaneBackp = new BorderPane();
+        
+        centerText = new TextArea();
         centerText.setText(hra.vratUvitani());
         centerText.setEditable(false); //nejde enterovat - commit příkaz
         
@@ -48,9 +84,13 @@ public class startmainclass extends Application {
         Label zadejPrikazLabel = new Label ("Zadej prikaz");
         zadejPrikazLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         
-        TextField zadejPrikazTextField = new TextField ("Sem zadej prikaz");
+        TextField zadejPrikazTextField = new TextField ("Zde zadejte prikaz");
         zadejPrikazTextField.setOnAction(new EventHandler<ActionEvent>() {
         
+            /**
+             * Metoda zabezpečující komunikaci s textovým rozhraním hry, pomocí textového vstupu dojde k zadání informací, které se graficky zobrazí v příslušném poli
+             * @param event 
+             */
         @Override
         public void handle (ActionEvent event) {
             String zadanyPrikaz = zadejPrikazTextField.getText();
@@ -73,15 +113,27 @@ public class startmainclass extends Application {
         dolniPanel.setAlignment(Pos.CENTER);
         dolniPanel.getChildren().addAll(zadejPrikazLabel, zadejPrikazTextField);
         
-        //přidání obrázku s mapou
-        FlowPane obrazekPane = new FlowPane();
-        ImageView obrazek = new ImageView(new Image(startmainclass.class.getResourceAsStream("/zdroje/mapa.jpg"), 300,300, false, false));
-        obrazekPane.getChildren().add(obrazek);
-        obrazekPane.setPrefSize(300,300);
-        
+        //spodek panel horejsek menu 
         borderPane.setBottom(dolniPanel);
-        borderPane.setLeft(obrazekPane);
-       
+        borderPane.setTop(menu);
+        
+        
+         // panel Předmětů  
+         panelPredmetu = new GUILokacePredmety(hra.getHerniPlan(),centerText);
+         borderPaneItemOut.setLeft(panelPredmetu.getList());
+         
+        // panel východů
+         panelVychodu = new GUIVychody(hra.getHerniPlan(),centerText,zadejPrikazTextField);       
+         borderPaneItemOut.setRight(panelVychodu.getList());
+         borderPane.setRight(borderPaneItemOut);
+         
+         // panel batohu
+         GUIbatoh = new GUIbatoh(hra.getHerniPlan(),centerText);
+         borderPaneBackp.setRight(GUIbatoh.getList());
+           
+         // panel s mapou
+         borderPaneBackp.setTop(mapa);
+         borderPane.setLeft(borderPaneBackp);
         
         
         
@@ -101,24 +153,25 @@ public class startmainclass extends Application {
         //mohu vkládat objekt do objektu (např. VBOX do border pane TOP)
         //root.getChildren().add(btn);
         
-        Scene scene = new Scene(borderPane, 400, 350);
+        Scene scene = new Scene(borderPane, 1600, 950); 
         
         primaryStage.setTitle("Moje adventura");
         primaryStage.setScene(scene);
         primaryStage.show();
         zadejPrikazTextField.requestFocus();
     }
-
+    
     /**
+     * Metoda pomocí zadání příslušného parametru zahájí hru v textovém či grafickém modu
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if(args.length == 0){
+        if(args.length == 0){ //play in GUI
             launch(args);
         }
         else {
             if(args[0].equals("-text")) {
-                IHra hra = new Hra();
+                IHra hra = new Hra(); //play in text UI
                 TextoveRozhrani textoveRozhrani = new TextoveRozhrani(hra);
                 textoveRozhrani.hraj();
             } else {
@@ -126,8 +179,23 @@ public class startmainclass extends Application {
                 System.exit(1);
             }
         }
+        /**
+         * metoda zavolání nové hry
+         */
         }
-        
+        public void novaHra() {
+            hra = new Hra();
+            centerText.setText(hra.vratUvitani());
+            mapa.novaHra(hra); 
+        }
+
+    /**
+     * Getter pro primary stage (vykreslují se UI prvky)
+     * @return the primaryStage
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
         
     }
     

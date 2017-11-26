@@ -4,9 +4,10 @@ package logika;
  * PrikazBatoh představuje samostatnou třídu. 
  * Tato třída umožňuje pomocí svých instancí procházet Batoh.
  * Zobrazuje tak předměty, které Batoh obsahuje.
+ * no change here for 2017
  * 
  * @author Marek Dobeš
- * @version 01 05 2017
+ * @version ZS 2017/2018
 */
 public class PrikazBatoh implements IPrikaz
 {

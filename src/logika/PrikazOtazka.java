@@ -3,9 +3,10 @@ package logika;
 /**
  * PrikazOtazka představuje samostatnou třídu. 
  * Tato třída umožňuje pomocí svých instancí "komunikovat" s jednotlivými NPC ve hře.
+ * no change here for 2017
  * 
  * @author Marek Dobeš
- * @version 02 05 2017
+ * @version ZS 2017/2018
  */
 
 public class PrikazOtazka implements IPrikaz
