@@ -62,7 +62,7 @@ public class GUIbatoh implements Observer{
         
         Lview = new ListView<>();
         Lview.setItems(infoPred);
-        Lview.setPrefWidth(250);
+        Lview.setPrefWidth(150);
         
         /**
          * Metoda umožňující přidání předmětu z batohu do lokace na "klik myši".
@@ -92,12 +92,13 @@ public class GUIbatoh implements Observer{
                        
                     }
                     
-                    String vstupniPrikaz = "poloz "+nazev;
-                    String odpovedHry = plan.getHra().zpracujPrikaz("poloz "+nazev);
+                    String iPrikaz = "poloz "+nazev;
+                    String zpracuj = plan.getHra().zpracujPrikaz("poloz "+nazev);
 
                 
-                    centerText.appendText("\n" + vstupniPrikaz + "\n");
-                    centerText.appendText("\n" + odpovedHry + "\n");
+                    centerText.appendText("\n" + iPrikaz + "\n");
+                    centerText.appendText("\n" + zpracuj + "\n");
+                    
                
                     plan.notifyAllObservers();
                 }
@@ -126,7 +127,7 @@ public class GUIbatoh implements Observer{
         {
             
         Predmet var = seznamPredmetu.get(identPred); //dosazení hodnoty názvu x do proměnné -->níze poté získání identu zdroje
-        ImageView obrazek = new ImageView(new Image(main.startmainclass.class.getResourceAsStream("/zdroje/"+var.getObrazek()), 100, 100, false, false));
+        ImageView obrazek = new ImageView(new Image(main.Main.class.getResourceAsStream("/zdroje/"+var.getObrazek()), 100, 100, false, false));
         
         infoPred.add(obrazek);
         }

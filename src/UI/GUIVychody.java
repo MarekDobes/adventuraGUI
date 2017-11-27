@@ -16,6 +16,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import logika.HerniPlan;
 import logika.IHra;
+import main.Main;
 import utils.Observer;
 
 
@@ -62,7 +63,7 @@ public class GUIVychody implements Observer
      */
 private void prehrajKroky(){
        
-        String zvuk = main.startmainclass.class.getResource("/zdroje/kroky.mp3").toString();
+        String zvuk = main.Main.class.getResource("/zdroje/kroky.mp3").toString();
         Media kroky = new Media(zvuk);
         MediaPlayer mediaPlayer = new MediaPlayer(kroky);
         mediaPlayer.setVolume(0.8);
@@ -94,11 +95,11 @@ private void prehrajKroky(){
                 if (click.getClickCount() == 1) 
                 {
                     noway = " Dál už to nepůjde";
-                    String vstupniPrikaz = "jdi "+Lview.getSelectionModel().getSelectedItem();
-                    String odpovedHry = plan.getHra().zpracujPrikaz("jdi "+Lview.getSelectionModel().getSelectedItem());
+                    String iPrikaz = "jdi "+Lview.getSelectionModel().getSelectedItem();
+                    String zpracuj = plan.getHra().zpracujPrikaz("jdi "+Lview.getSelectionModel().getSelectedItem());
 
-                    centerText.appendText("\n" + vstupniPrikaz + "\n");
-                    centerText.appendText("\n" + odpovedHry + "\n");
+                    centerText.appendText("\n" + iPrikaz + "\n");
+                    centerText.appendText("\n" + zpracuj + "\n");
                     prehrajKroky();
                     
                     if (plan.getHra().konecHry()) {
@@ -106,6 +107,7 @@ private void prehrajKroky(){
                     zadejPrikazTextArea.setEditable(false);
                     centerText.appendText(plan.getHra().vratEpilog());
                     centerText.appendText(noway);
+                    
                     }
                      
                     plan.notifyAllObservers();

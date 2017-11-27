@@ -12,7 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import logika.IHra;
-import main.startmainclass;
+import main.Main;
 import utils.Observer;
 
 /**
@@ -44,7 +44,7 @@ public class Mapa extends AnchorPane implements Observer{
      * Při každé změně volá metodu update() - upozorní observera o změně
      */
     private void init(){ //metoda void init (nahraje se obrázek -->mapa z mainclass (byla původně), na ní bude poté "tečka", tedy 
-        ImageView obrazek = new ImageView(new Image(startmainclass.class.getResourceAsStream("/zdroje/mapalokaci.jpg"), 800,800, false, false));
+        ImageView obrazek = new ImageView(new Image(Main.class.getResourceAsStream("/zdroje/mapalokaci.jpg"), 800,800, false, false));
         tecka = new Circle(10,Paint.valueOf("red"));
         this.getChildren().addAll(obrazek, tecka);
         update();

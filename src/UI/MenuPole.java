@@ -17,7 +17,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import logika.Hra;
 import logika.IHra;
-import main.startmainclass;
+import main.Main;
 
 
 /**
@@ -29,7 +29,7 @@ import main.startmainclass;
  */
 public class MenuPole extends MenuBar{
     
-    private startmainclass main;
+    private Main main;
     
     private IHra hra;
     private Stage stage;
@@ -38,7 +38,7 @@ public class MenuPole extends MenuBar{
      * konstruktor hry s parametrem main - staruje novou hru
      * @param main 
      */
-    public MenuPole(IHra hra, startmainclass main){
+    public MenuPole(IHra hra, Main main){
         this.hra = hra;
         this.main = main;
         this.stage = main.getPrimaryStage();
@@ -103,7 +103,7 @@ public class MenuPole extends MenuBar{
                 stage.setTitle("Napoveda");
                 WebView webview = new WebView();
                 
-                webview.getEngine().load(startmainclass.class.getResource("/zdroje/napoveda.html").toExternalForm());
+                webview.getEngine().load(Main.class.getResource("/zdroje/napoveda.html").toExternalForm());
                 
                 stage.setScene(new Scene(webview, 500, 500));
                 stage.show();

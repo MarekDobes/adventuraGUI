@@ -56,7 +56,7 @@ public class GUILokacePredmety implements Observer{
         infoPred = FXCollections.observableArrayList();
         
         Lview.setItems(infoPred);
-        Lview.setPrefWidth(250);
+        Lview.setPrefWidth(150);
         Lview.setPrefHeight(600);
         
         
@@ -87,12 +87,12 @@ public class GUILokacePredmety implements Observer{
                        
                     }
                     
-                    String vstupniPrikaz = "vezmi "+nazev;
-                    String odpovedHry = plan.getHra().zpracujPrikaz("vezmi "+nazev);
+                    String iPrikaz = "vezmi "+nazev;
+                    String zpracuj = plan.getHra().zpracujPrikaz("vezmi "+nazev);
 
                 
-                    centerText.appendText("\n" + vstupniPrikaz + "\n");
-                    centerText.appendText("\n" + odpovedHry + "\n");
+                    centerText.appendText("\n" + iPrikaz + "\n");
+                    centerText.appendText("\n" + zpracuj + "\n");
                
                     plan.notifyAllObservers();
                 }
@@ -130,7 +130,7 @@ public class GUILokacePredmety implements Observer{
         for (String listPred : seznamPredmetu.keySet()) 
         {
         Predmet var = seznamPredmetu.get(listPred); //předmět se zást názvem var získá hodnotu příslušného předmětu v Lokaci
-        ImageView obrazek = new ImageView(new Image(main.startmainclass.class.getResourceAsStream("/zdroje/"+var.getObrazek()), 120, 120, false, false));
+        ImageView obrazek = new ImageView(new Image(main.Main.class.getResourceAsStream("/zdroje/"+var.getObrazek()), 120, 120, false, false));
         
         infoPred.add(obrazek);
         }
@@ -145,6 +145,7 @@ public class GUILokacePredmety implements Observer{
     public void odkazHerniPlan (HerniPlan plan){
         this.plan = plan;
         plan.registerObserver(this);
+        
         this.update();
     }
 
